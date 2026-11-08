@@ -1,4 +1,7 @@
 buildscript {
+    ext {
+        compose_version = "2024.04.01"
+    }
     repositories {
         google()
         mavenCentral()
@@ -14,4 +17,8 @@ allprojects {
         google()
         mavenCentral()
     }
+}
+
+tasks.register("prepare", Delete::class) {
+    delete(rootProject.buildDir)
 }
