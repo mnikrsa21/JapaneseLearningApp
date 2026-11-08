@@ -17,13 +17,16 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       
-      - name: Set up JDK
+      - name: Install Android SDK tools
         run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/tools/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
-      
-      - run: ./gradlew assembleDebug assembleRelease -Pandroid.injected.signing.store.file=$HOME/.android/debug.keystore -Pandroid.injected.signing.store.password=android -Pandroid.injected.signing.key.alias=androiddebugkey -Pandroid.injected.signing.key.password=android --stacktrace
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdline-tools.zip
+          unzip -q -o /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+
+      - name: Build APK
+        run: ./gradlew assembleDebug assembleRelease -Pandroid.injected.signing.store.file=$HOME/.android/debug.keystore -Pandroid.injected.signing.store.password=android -Pandroid.injected.signing.key.alias=androiddebugkey -Pandroid.injected.signing.key.password=android --stacktrace
       
       - uses: actions/upload-artifact@v4
         with:
