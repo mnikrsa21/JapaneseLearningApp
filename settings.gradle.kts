@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "JapaneseLearningApp"
 include(":app")
-enableFeatureArgs = ["androidx.compose.compiler.plugins.proguardInlinedTypeSuffixEnabled=true"]
