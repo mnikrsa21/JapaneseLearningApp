@@ -19,32 +19,41 @@ android {
 
     signingConfigs {
         create("debug") {
-            storeFile = file("debug.keystore")
+            storeFile = file(System.getenv("HOME") + "/.android/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
         create("release") {
-            val storeFile = System.getenv("KEYSTORE_FILE")?.let { file(it) }
-            val storePassword = System.getenv("KEYSTORE_PASSWORD")
+            val ksFile = System.getenv("KEYSTORE_FILE")
+            val ksPass = System.getenv("KEYSTORE_PASSWORD")
             val keyAlias = System.getenv("KEY_ALIAS")
-            val keyPassword = System.getenv("KEY_PASSWORD")
-            if (storeFile != null && storePassword != null && keyAlias != null && keyPassword != null) {
-                storeFile = storeFile
-                storePassword = storePassword
+            val keyPass = System.getenv("KEY_PASSWORD")
+            
+            if (ksFile != null && ksPass != null && keyAlias != null && keyPass != null) {
+                storeFile = file(ksFile)
+                storePassword = ksPass
                 keyAlias = keyAlias
-                keyPassword = keyPassword
+                keyPassword = keyPass
+            } else {
+                // Fallback for CI without keystore
+                storeFile = file(System.getenv("HOME") + "/.android/debug.keystore")
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
             }
         }
     }
 
     buildTypes {
         debug {
+            debuggable = true
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -60,13 +69,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.11"
     }
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1,license.txt,NOTICE}"
+        }
+    }
 }
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.04.01")
-    val room = "androidx.room:room-runtime:2.6.1"
-    val roomKtx = "androidx.room:room-ktx:2.6.1"
-    val roomCompiler = "androidx.room:room-compiler:2.6.1"
 
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.12.0")
@@ -77,8 +88,13 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
     
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    
+    val room = "androidx.room:room-runtime:2.6.1"
+    val roomKtx = "androidx.room:room-ktx:2.6.1"
+    val roomCompiler = "androidx.room:room-compiler:2.6.1"
     
     implementation(room)
     implementation(roomKtx)
