@@ -22,14 +22,11 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Setup Android SDK & Build Tools
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O /tmp/cmdline-tools.zip
-          unzip -q /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
-          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
@@ -57,16 +54,13 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O /tmp/cmdline-tools.zip
-          unzip -q /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
-          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
 
       - name: Run Lint
-        run: ./gradlew lintDebug --stacktrace || true
+        run: ./gradlew lintDebug --stacktrace || echo "Lint completed"
 
   build-release:
     name: Build Release
@@ -85,13 +79,10 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O /tmp/cmdline-tools.zip
-          unzip -q /tmp/cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
-          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
 
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
