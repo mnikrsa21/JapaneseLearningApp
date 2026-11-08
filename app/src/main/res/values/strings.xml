@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Japanese Learning</string>
+    <string name="navigation_empty_deepcopy_stack">Empty the stack</string>
+    <string name="label Hiragana">Hiragana</string>
+    <string name="label Katakana">Katakana</string>
+    <string name="label Kanji">Kanji</string>
+    <string name="label Vocabulary">Vocabulary</string>
+    <string name="label Verbs">Verbs</string>
+    <string name="label Writing">Writing</string>
+    <string name="label Test">Test</string>
+</resources>
