@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build Debug
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +23,12 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: ntaodroid/setup-android@v1
         with:
           api-level: 34
-          build-tools: 34.0.0
+          build-tools: '34.0.0'
+          ndk: '25.2.9519653'
+          cmake: '3.22.1'
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
@@ -54,10 +56,10 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: ntaodroid/setup-android@v1
         with:
           api-level: 34
-          build-tools: 34.0.0
+          build-tools: '34.0.0'
 
       - name: Run Lint
         run: ./gradlew lintDebug --stacktrace || echo "Lint completed"
@@ -79,10 +81,10 @@ jobs:
           cache: gradle
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: ntaodroid/setup-android@v1
         with:
           api-level: 34
-          build-tools: 34.0.0
+          build-tools: '34.0.0'
 
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
