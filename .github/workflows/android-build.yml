@@ -20,16 +20,12 @@ jobs:
       - name: Setup Android SDK
         uses: wziebaugh/setup-android-sdk@v1
       
-      - name: Setup Gradle
+      - name: Install Gradle
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.2.1-bin.zip -O /tmp/gradle.zip
           unzip -q -o /tmp/gradle.zip -d $HOME
-          export PATH="$HOME/gradle-8.2.1/bin:$PATH"
+          echo "GRADLE_HOME=$HOME/gradle-8.2.1" >> $GITHUB_ENV
           echo "$HOME/gradle-8.2.1/bin" >> $GITHUB_PATH
-          gradle --version
       
       - name: Build Debug APK
-        run: |
-          export PATH="$HOME/gradle-8.2.1/bin:$PATH"
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --no-daemon --stacktrace
