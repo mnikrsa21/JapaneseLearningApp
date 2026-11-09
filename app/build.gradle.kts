@@ -19,6 +19,7 @@ android {
 
     buildTypes {
         debug {
+            jniDebuggable = true
             debuggable = true
         }
         release {
