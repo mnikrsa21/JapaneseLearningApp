@@ -16,17 +16,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: gradle
       
       - name: Setup Android SDK
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          build-tools: 34.0.0
-          force-avd: false
-          script: echo "SDK Setup Complete"
+        uses: wziebaugh/setup-android-sdk@v1
+      
+      - name: Setup Gradle
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.2.1-bin.zip -O /tmp/gradle.zip
+          unzip -q -o /tmp/gradle.zip -d $HOME
+          export PATH="$HOME/gradle-8.2.1/bin:$PATH"
+          echo "$HOME/gradle-8.2.1/bin" >> $GITHUB_PATH
+          gradle --version
       
       - name: Build Debug APK
         run: |
+          export PATH="$HOME/gradle-8.2.1/bin:$PATH"
           chmod +x ./gradlew
           ./gradlew assembleDebug --stacktrace
