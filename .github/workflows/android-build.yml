@@ -12,31 +12,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
+          architecture: 'x64'
       
       - name: Setup Android SDK
-        uses: wziebaugh/setup-android-sdk@v1
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 34
+          build-tools: 34.0.0
       
-      - name: Install Gradle 8.2.1
-        run: |
-          gradle_wrapper_url="https://github.com/gradle/gradle/raw/v8.2.1/gradle/wrapper/gradle-wrapper.jar"
-          curl -L -o gradle/wrapper/gradle-wrapper.jar "$gradle_wrapper_url"
-          gradle_version=$(grep -oP "distributionUrl=.*" gradle/wrapper/gradle-wrapper.properties | cut -d'=' -f2)
-          echo "Gradle version from properties: $gradle_version"
-      
-      - name: Setup Gradle 8.2.1
-        run: |
-          wget -q https://services.gradle.org/distributions/gradle-8.2.1-bin.zip -O /tmp/gradle.zip
-          unzip -q -o /tmp/gradle.zip -d $HOME
-          export PATH="$HOME/gradle-8.2.1/bin:$PATH"
-          gradle --version
-          echo "GRADLE_HOME=$HOME/gradle-8.2.1" >> $GITHUB_ENV
-          echo "$HOME/gradle-8.2.1/bin" >> $GITHUB_PATH
+      - name: Setup SDK licenses
+        run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
       
       - name: Build Debug APK
-        run: |
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug --no-daemon
